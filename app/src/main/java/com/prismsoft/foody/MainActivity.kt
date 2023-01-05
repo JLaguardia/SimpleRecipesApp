@@ -16,8 +16,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
 
-        navController = findNavController(R.id.nav_host_fragment)
+    override fun onResume() {
+        super.onResume()
+        navController = binding.navHostFragment.findNavController()
         val appBarConfig = AppBarConfiguration(
             setOf(
                 R.id.recipesFragment,
