@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/lightGray"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/img_recipe"
+                android:layout_width="200dp"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_food_joke"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/recipe_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/courgette"
+                android:maxLines="2"
+                android:textColor="@color/darker"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/img_recipe"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/recipe_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textColor="@color/darkGray"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco"
+                app:layout_constraintTop_toBottomOf="@id/recipe_title"
+                app:layout_constraintStart_toStartOf="@id/recipe_title"
+                app:layout_constraintEnd_toEndOf="@id/recipe_title"
+                />
+
+            <ImageView
+                android:id="@+id/heart_ico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_heart"
+                android:layout_marginBottom="36dp"
+                android:layout_marginTop="12dp"
+                app:tint="@color/red"
+                app:layout_constraintTop_toBottomOf="@id/recipe_desc"
+                app:layout_constraintStart_toStartOf="@id/txt_fav_count"
+                app:layout_constraintEnd_toEndOf="@id/txt_fav_count"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/clock_ico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_clock"
+                app:tint="@color/yellow"
+                app:layout_constraintTop_toTopOf="@id/heart_ico"
+                app:layout_constraintStart_toStartOf="@id/txt_time_count"
+                app:layout_constraintEnd_toEndOf="@id/txt_time_count"
+                app:layout_constraintBottom_toBottomOf="@id/heart_ico"
+                />
+
+            <ImageView
+                android:id="@+id/vegan_ico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_grass"
+                app:layout_constraintTop_toTopOf="@id/heart_ico"
+                app:layout_constraintStart_toStartOf="@id/lbl_vegan"
+                app:layout_constraintEnd_toEndOf="@id/lbl_vegan"
+                app:layout_constraintBottom_toBottomOf="@id/heart_ico"
+                />
+
+            <TextView
+                android:id="@+id/txt_fav_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="10000"
+                android:textColor="@color/red"
+                app:layout_constraintTop_toBottomOf="@id/heart_ico"
+                app:layout_constraintStart_toStartOf="@id/recipe_desc"
+                app:layout_constraintEnd_toStartOf="@id/txt_time_count"
+                />
+
+            <TextView
+                android:id="@+id/txt_time_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="45"
+                android:layout_marginStart="24dp"
+                android:textColor="@color/yellow"
+                app:layout_constraintTop_toBottomOf="@id/clock_ico"
+                app:layout_constraintStart_toEndOf="@id/txt_fav_count"
+                app:layout_constraintEnd_toStartOf="@id/lbl_vegan"
+                />
+
+            <TextView
+                android:id="@+id/lbl_vegan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Vegan"
+                android:layout_marginStart="24dp"
+                app:layout_constraintTop_toBottomOf="@id/vegan_ico"
+                app:layout_constraintStart_toEndOf="@id/txt_time_count"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
