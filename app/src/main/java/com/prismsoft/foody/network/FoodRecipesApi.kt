@@ -1,4 +1,4 @@
-package com.prismsoft.foody
+package com.prismsoft.foody.network
 
 import com.prismsoft.foody.data.model.RecipeResponse
 import retrofit2.Response

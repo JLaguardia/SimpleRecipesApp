@@ -1,4 +1,4 @@
-package com.prismsoft.foody
+package com.prismsoft.foody.util
 
 class Constants {
     companion object {
