@@ -1,4 +1,4 @@
-package com.prismsoft.foody
+package com.prismsoft.foody.ui.fragments.recipes
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

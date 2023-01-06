@@ -1,10 +1,11 @@
-package com.prismsoft.foody
+package com.prismsoft.foody.ui.fragments.favorites
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.prismsoft.foody.R
 
 
 class FavoriteRecipesFragment : Fragment() {
