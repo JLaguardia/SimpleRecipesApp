@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <View
+        android:id="@+id/img_recipe"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        android:background="@color/mediumGray"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/recipe_title"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_margin="12dp"
+        android:background="@color/mediumGray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img_recipe"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/recipe_desc"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/mediumGray"
+        app:layout_constraintTop_toBottomOf="@id/recipe_title"
+        app:layout_constraintStart_toStartOf="@id/recipe_title"
+        app:layout_constraintEnd_toEndOf="@id/recipe_title"
+        />
+
+    <View
+        android:id="@+id/heart_ico"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="24dp"
+        android:background="@color/mediumGray"
+        app:layout_constraintTop_toBottomOf="@id/recipe_desc"
+        app:layout_constraintStart_toStartOf="@id/recipe_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/clock_ico"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginHorizontal="12dp"
+        android:background="@color/mediumGray"
+        app:layout_constraintTop_toTopOf="@id/heart_ico"
+        app:layout_constraintStart_toEndOf="@id/heart_ico"
+        app:layout_constraintEnd_toStartOf="@id/vegan_ico"
+        app:layout_constraintBottom_toBottomOf="@id/heart_ico"
+        />
+
+    <View
+        android:id="@+id/vegan_ico"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/mediumGray"
+        app:layout_constraintTop_toTopOf="@id/heart_ico"
+        app:layout_constraintEnd_toEndOf="@id/recipe_desc"
+        app:layout_constraintBottom_toBottomOf="@id/heart_ico"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

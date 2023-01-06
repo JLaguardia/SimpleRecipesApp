@@ -1,16 +1,21 @@
 package com.prismsoft.foody.ui.views.shimmer
 
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.prismsoft.foody.databinding.ShimmerItemViewBinding
+import com.prismsoft.foody.R
 
 import io.supercharge.shimmerlayout.ShimmerLayout
 
-class ShimmerViewHolderCpy(private val binding: ShimmerItemViewBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+class ShimmerViewHolderCpy(inflater: LayoutInflater, parent: ViewGroup, innerViewResId: Int) : RecyclerView.ViewHolder(inflater.inflate(
+    R.layout.shimmer_item_view, parent, false)) {
 
     private val mShimmerLayout: ShimmerLayout = itemView as ShimmerLayout
 
+    init {
+        inflater.inflate(innerViewResId, mShimmerLayout, true)
+    }
 
     fun setShimmerAngle(angle: Int) {
         mShimmerLayout.setShimmerAngle(angle)

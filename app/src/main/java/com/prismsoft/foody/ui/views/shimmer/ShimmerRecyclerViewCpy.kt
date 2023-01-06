@@ -20,7 +20,7 @@ class ShimmerRecyclerViewCpy : RecyclerView {
 
     private var mShimmerLayoutManager: RecyclerView.LayoutManager? = null
     private var mActualLayoutManager: RecyclerView.LayoutManager? = null
-    private var mLayoutMangerType: LayoutMangerType? = null
+    private var mLayoutMangerType: LayoutMangerType? = LayoutMangerType.LINEAR_VERTICAL
 
     private var mCanScroll: Boolean = false
     var layoutReference: Int = 0
@@ -63,7 +63,7 @@ class ShimmerRecyclerViewCpy : RecyclerView {
         val mShimmerItemBackground: Drawable?
 
         try {
-            setDemoLayoutReference(
+            setLayoutReference(
                 a.getResourceId(
                     R.styleable.ShimmerRecyclerViewCpy_shimmer_demo_layout,
                     R.layout.shimmer_sample_view
@@ -82,12 +82,10 @@ class ShimmerRecyclerViewCpy : RecyclerView {
                 )
             )
 
-            val value =
-                a.getInteger(R.styleable.ShimmerRecyclerViewCpy_shimmer_demo_layout_manager_type, 0)
-            when (value) {
-                0 -> setDemoLayoutManager(LayoutMangerType.LINEAR_VERTICAL)
-                1 -> setDemoLayoutManager(LayoutMangerType.LINEAR_HORIZONTAL)
-                2 -> setDemoLayoutManager(LayoutMangerType.GRID)
+            when (a.getInteger(R.styleable.ShimmerRecyclerViewCpy_shimmer_demo_layout_manager_type, 0)) {
+                0 -> setLayoutManager(LayoutMangerType.LINEAR_VERTICAL)
+                1 -> setLayoutManager(LayoutMangerType.LINEAR_HORIZONTAL)
+                2 -> setLayoutManager(LayoutMangerType.GRID)
                 else -> throw IllegalArgumentException("This value for layout manager is not valid!")
             }
 
@@ -136,7 +134,7 @@ class ShimmerRecyclerViewCpy : RecyclerView {
      *
      * @param type layout manager reference
      */
-    fun setDemoLayoutManager(type: LayoutMangerType) {
+    fun setLayoutManager(type: LayoutMangerType) {
         mLayoutMangerType = type
     }
 
@@ -216,7 +214,7 @@ class ShimmerRecyclerViewCpy : RecyclerView {
      *
      * @param mLayoutReference layout resource id of the layout which should be shown as demo.
      */
-    fun setDemoLayoutReference(mLayoutReference: Int) {
+    fun setLayoutReference(mLayoutReference: Int) {
         this.layoutReference = mLayoutReference
         mShimmerAdapter!!.setLayoutReference(layoutReference)
     }

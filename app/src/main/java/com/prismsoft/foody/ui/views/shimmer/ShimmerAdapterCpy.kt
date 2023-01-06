@@ -1,6 +1,7 @@
 package com.prismsoft.foody.ui.views.shimmer
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,7 @@ class ShimmerAdapterCpy : RecyclerView.Adapter<ShimmerViewHolderCpy>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShimmerViewHolderCpy {
 
         val shimmerViewHolder =
-            ShimmerViewHolderCpy(ShimmerItemViewBinding.inflate(LayoutInflater.from(parent.context)))
+            ShimmerViewHolderCpy(LayoutInflater.from(parent.context), parent, mLayoutReference)
                 .apply {
                     setShimmerColor(mShimmerColor)
                     setShimmerAngle(mShimmerAngle)
