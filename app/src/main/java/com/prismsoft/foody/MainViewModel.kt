@@ -15,9 +15,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel(
+class MainViewModel @Inject constructor(
     private val repository: Repository,
     application: MainApp
 ) : AndroidViewModel(application) {
