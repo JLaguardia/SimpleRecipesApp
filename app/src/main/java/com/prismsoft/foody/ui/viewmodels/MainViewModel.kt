@@ -1,46 +1,40 @@
-package com.prismsoft.foody
+package com.prismsoft.foody.ui.viewmodels
 
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.prismsoft.foody.data.NetworkResult
 import com.prismsoft.foody.data.Repository
 import com.prismsoft.foody.data.model.RecipeResponse
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 
-@HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: Repository,
-    application: MainApp
-) : AndroidViewModel(application) {
+    private val repository: Repository
+) : ViewModel() {
 
     private val _recipesResponse: MutableLiveData<NetworkResult<RecipeResponse>> = MutableLiveData()
     val recipesResponse: LiveData<NetworkResult<RecipeResponse>> = _recipesResponse
 
-    fun getRecipes(queries: Map<String, String>) = viewModelScope.launch(Dispatchers.IO) {
-        getRecipesSafeCall(queries)
-    }
+    fun getRecipes(context: Context, queries: Map<String, String>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            getRecipesSafeCall(context, queries)
+        }
 
-    private suspend fun getRecipesSafeCall(queries: Map<String, String>) {
-        _recipesResponse.value = NetworkResult.Loading()
-        if(hasInternetConnection()){
+    private suspend fun getRecipesSafeCall(context: Context, queries: Map<String, String>) {
+        _recipesResponse.postValue(NetworkResult.Loading())
+        if (hasInternetConnection(context)) {
             try {
                 val response = repository.remote.getRecipes(queries)
-                _recipesResponse.value = handleResponse(response)
-            } catch (e: Exception){
-                _recipesResponse.value = NetworkResult.Error(e.message)
+                _recipesResponse.postValue(handleResponse(response))
+            } catch (e: Exception) {
+                _recipesResponse.postValue(NetworkResult.Error(e.message))
             }
         } else {
-            _recipesResponse.value = NetworkResult.Error(message = "No Internet Connection.")
+            _recipesResponse.postValue(NetworkResult.Error(message = "No Internet Connection."))
         }
     }
 
@@ -57,8 +51,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun hasInternetConnection(): Boolean {
-        val connectivityManager = getApplication<Application>().getSystemService(
+    private fun hasInternetConnection(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork ?: return false

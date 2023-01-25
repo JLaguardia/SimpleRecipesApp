@@ -2,14 +2,17 @@ package com.prismsoft.foody.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.prismsoft.foody.data.model.RecipeResponse
 import com.prismsoft.foody.databinding.RecipesRowBinding
 import com.prismsoft.foody.data.model.Result
+import com.prismsoft.foody.util.RecipesDiffUtilCallback
 
-class RecipeListAdapter() : ListAdapter<Result, RecipeListAdapter.RecipeViewHolder>(ResultCallback()) {
+
+class RecipeListAdapter() :
+    ListAdapter<Result, RecipeListAdapter.RecipeViewHolder>(RecipesDiffUtilCallback()) {
+
     class RecipeViewHolder(private val binding: RecipesRowBinding) : ViewHolder(binding.root) {
         fun bind(item: Result) {
             binding.result = item
@@ -18,27 +21,21 @@ class RecipeListAdapter() : ListAdapter<Result, RecipeListAdapter.RecipeViewHold
 
         companion object {
             fun from(parent: ViewGroup): RecipeViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                return RecipeViewHolder(
-                    RecipesRowBinding.inflate(inflater)
-                )
+                val binding =
+                    RecipesRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return RecipeViewHolder(binding)
             }
         }
     }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
+        return RecipeViewHolder.from(parent)
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder =
-        RecipeViewHolder.from(parent)
+    override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.bind(item)
+    }
 
+    fun setData(newData: RecipeResponse) = submitList(newData.results)
 
-    override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) =
-        holder.bind(getItem(position))
-
-    fun setData(response: RecipeResponse) = submitList(response.results)
-}
-
-class ResultCallback: DiffUtil.ItemCallback<Result>() {
-    override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean =
-        oldItem.sourceName == newItem.sourceName
-
-    override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean = oldItem == newItem
 }

@@ -16,7 +16,7 @@ class ShimmerRecyclerViewCpy : RecyclerView {
      */
     var actualAdapter: RecyclerView.Adapter<*>? = null
         private set
-    private var mShimmerAdapter: ShimmerAdapterCpy? = null
+    private var mShimmerAdapter: ShimmerAdapterCpy = ShimmerAdapterCpy()
 
     private var mShimmerLayoutManager: RecyclerView.LayoutManager? = null
     private var mActualLayoutManager: RecyclerView.LayoutManager? = null
@@ -52,7 +52,6 @@ class ShimmerRecyclerViewCpy : RecyclerView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        mShimmerAdapter = ShimmerAdapterCpy()
         val a = context.obtainStyledAttributes(attrs, R.styleable.ShimmerRecyclerViewCpy, 0, 0)
 
         val mShimmerAngle: Int
@@ -109,13 +108,13 @@ class ShimmerRecyclerViewCpy : RecyclerView {
             a.recycle()
         }
 
-        mShimmerAdapter!!.setShimmerAngle(mShimmerAngle)
-        mShimmerAdapter!!.setShimmerColor(mShimmerColor)
-        mShimmerAdapter!!.setShimmerMaskWidth(mShimmerMaskWidth)
+        mShimmerAdapter.setShimmerAngle(mShimmerAngle)
+        mShimmerAdapter.setShimmerColor(mShimmerColor)
+        mShimmerAdapter.setShimmerMaskWidth(mShimmerMaskWidth)
         if (mShimmerItemBackground != null)
-            mShimmerAdapter!!.setShimmerItemBackground(mShimmerItemBackground)
-        mShimmerAdapter!!.setShimmerDuration(mShimmerDuration)
-        mShimmerAdapter!!.setAnimationReversed(isAnimationReversed)
+            mShimmerAdapter.setShimmerItemBackground(mShimmerItemBackground)
+        mShimmerAdapter.setShimmerDuration(mShimmerDuration)
+        mShimmerAdapter.setAnimationReversed(isAnimationReversed)
 
         showShimmerAdapter()
     }
