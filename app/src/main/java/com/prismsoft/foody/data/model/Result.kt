@@ -44,4 +44,8 @@ data class Result(
     val veryHealthy: Boolean,
     @Json(name = "veryPopular")
     val veryPopular: Boolean
-)
+){
+    fun toListItem() {
+
+    }
+}
