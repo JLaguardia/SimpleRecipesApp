@@ -15,17 +15,17 @@ sealed class NavBarItem(
     object Recipes: NavBarItem(
         title = "Recipes",
         icon = Icons.Default.Home,
-        "home"
+        "recipes"
     )
 
     object Favorites: NavBarItem(
-        title = "Recipes",
+        title = "Favorites",
         icon = Icons.Default.Favorite,
-        "home"
+        "favorites"
     )
     object Joke: NavBarItem(
         title = "Joke",
         icon = Icons.Default.Face,
-        "home"
+        "jokes"
     )
 }

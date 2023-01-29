@@ -118,7 +118,7 @@ fun ShimmerItem() {
 fun ShimmerItemPreview() {
     val scope = rememberCoroutineScope()
     var loading by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     FoodyTheme {
@@ -145,7 +145,7 @@ fun ShimmerItemPreview() {
 fun ShimmerItemPreviewNight() {
     val scope = rememberCoroutineScope()
     var loading by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     FoodyTheme {

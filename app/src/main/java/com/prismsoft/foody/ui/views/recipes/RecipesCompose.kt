@@ -1,7 +1,11 @@
 package com.prismsoft.foody.ui.views.recipes
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -22,11 +26,70 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.prismsoft.foody.MainViewModel
 import com.prismsoft.foody.R
+import com.prismsoft.foody.data.NetworkResult
+import com.prismsoft.foody.data.model.RecipeResponse
 import com.prismsoft.foody.data.model.Result
 import com.prismsoft.foody.ui.theme.FoodyTheme
+import com.prismsoft.foody.ui.views.navigation.NavigatorManager
 import com.prismsoft.foody.ui.views.recipes.custom.Leaf
-import kotlinx.coroutines.delay
+import com.prismsoft.foody.ui.views.shimmer.ShimmerListItem
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
+
+class RecipesView(
+    val viewModel: MainViewModel,
+    val navigatorManager: NavigatorManager,
+    context: Context
+) {
+//    private val scope = CoroutineScope(Dispatchers.IO) + Job()
+
+    init {
+        viewModel.getRecipes(context = context)
+    }
+
+    @Composable
+    fun RecipesList() {
+        var retry by remember {
+            mutableStateOf(false)
+        }
+//        val result = viewModel.recipesResponse.collectAsState()
+//        val loading = result.value is NetworkResult.Loading
+        var result by remember {
+            mutableStateOf<NetworkResult<RecipeResponse>>(NetworkResult.Loading())
+        }
+
+        LaunchedEffect(key1 = retry) {
+            viewModel.recipesResponse.collectLatest {
+                Log.i("JAMES::", "got response: ${it.message}")
+                result = it
+            }
+        }
+
+        LazyColumn {
+            if (result is NetworkResult.Loading) {
+                items(5) {
+                    ShimmerListItem(isLoading = true) { }
+                }
+            } else {
+                items(result.data?.results ?: emptyList()) { item ->
+                    RecipeListItem(item = item.toRecipeItemData())
+                }
+            }
+        }
+    }
+}
+
+private fun Result.toRecipeItemData() =
+    RecipeItemData(
+        title = this.title,
+        body = this.summary,
+        likes = this.aggregateLikes,
+        time = this.readyInMinutes.toFloat(),
+        isVegan = this.vegan,
+        imageUrl = this.image
+    )
 
 @Composable
 fun RecipeListItem(
@@ -41,16 +104,17 @@ fun RecipeListItem(
         Row(Modifier.fillMaxWidth()) {
             Image(
                 modifier = Modifier
-                    .fillMaxWidth(0.45f)
-                ,
+                    .fillMaxWidth(0.45f),
                 imageVector = Icons.Filled.Face,
                 contentScale = ContentScale.Crop,
-                contentDescription = "")
+                contentDescription = ""
+            )
+
             Column {
                 Text(
                     text = item.title,
                     overflow = TextOverflow.Ellipsis,
-                    fontFamily = FontFamily(Font(R.font.courgette)),
+//                    fontFamily = FontFamily(Font(R.font.courgette)),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -72,7 +136,8 @@ fun RecipeListItem(
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             tint = colorResource(id = R.color.red),
-                            contentDescription = "favorited")
+                            contentDescription = "favorited"
+                        )
                         Text(
                             text = item.likes.toString(),
                             color = colorResource(id = R.color.red)
@@ -82,19 +147,26 @@ fun RecipeListItem(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_clock),
                             tint = colorResource(id = R.color.yellow),
-                            contentDescription = "time")
+                            contentDescription = "time"
+                        )
                         Text(
                             text = item.time.toString(),
                             color = colorResource(id = R.color.yellow)
                         )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        val color = colorResource(id = if(item.isVegan){
-                             R.color.green } else { R.color.black } )
+                        val color = colorResource(
+                            id = if (item.isVegan) {
+                                R.color.green
+                            } else {
+                                R.color.black
+                            }
+                        )
                         Icon(
                             imageVector = CustomIcons.Leaf,
                             tint = color,
-                            contentDescription = "Vegan")
+                            contentDescription = "Vegan"
+                        )
                         Text(
                             text = "Vegan",
                             color = color
@@ -109,18 +181,14 @@ fun RecipeListItem(
 @Preview(showSystemUi = false)
 @Composable
 fun RecipePreview() {
-//    val result = Result(
-//        1,
-//        true,
-//    )
     var item by remember {
-       mutableStateOf(testItems[0])
+        mutableStateOf(testItems[0])
     }
     FoodyTheme {
         RecipeListItem(item)
     }
 
-    LaunchedEffect(key1 = "test"){
+    LaunchedEffect(key1 = "test") {
         var cycles = 0
         while (cycles < 10) {
             delay(5000L)

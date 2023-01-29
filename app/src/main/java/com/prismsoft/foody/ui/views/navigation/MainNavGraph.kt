@@ -1,10 +1,12 @@
 package com.prismsoft.foody.ui.views.navigation
 
 import androidx.compose.material.Text
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.prismsoft.foody.MainViewModel
 import com.prismsoft.foody.ui.navigation.NavBarItem
+import com.prismsoft.foody.ui.views.recipes.RecipesView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,6 +23,8 @@ fun buildNavGraph(
          * Recipe list home
          */
         composable(NavBarItem.Recipes.navRoute) {
+            RecipesView(viewModel, navigator, LocalContext.current)
+                .RecipesList()
 //            HomeUi(navigator)
         }
 
