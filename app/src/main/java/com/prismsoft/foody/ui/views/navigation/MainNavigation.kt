@@ -2,12 +2,15 @@ package com.prismsoft.foody.ui.views.navigation
 
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -17,13 +20,13 @@ import com.prismsoft.foody.MainViewModel
 import com.prismsoft.foody.ui.navigation.NavBarItem
 import kotlinx.coroutines.flow.collectLatest
 
+val TAG = "MainNavigationUi"
+
 @Composable
 fun MainNavigationUi(
     navigator: NavigatorManager,
     viewModel: MainViewModel
 ){
-
-    val TAG = "MainNavigationUi"
     val navController = rememberNavController()
     val barCompose: @Composable () -> Unit = { BarItemsUi(navController) }
     val content: @Composable (PaddingValues) -> Unit = { innerPadding ->
@@ -39,15 +42,23 @@ fun MainNavigationUi(
     }
 
     LaunchedEffect(key1 = "Navigation"){
-        navigator.sharedFlow.collectLatest {
+        navigator.sharedFlow.collectLatest {state ->
+            when(state){
+                NavigatorManager.NavigatorState.NavigateBack -> navController.popBackStack()
+                is NavigatorManager.NavigatorState.NavigateAction -> navController.nav(state)
+            }
 
-            val route = "${it.first.navRoute}${it.second ?: ""}"
-            Log.i(TAG, "MainNavigationUi: route: $route")
-            navController.navigate(route)
         }
     }
 
     BottomScaffold(bottomBar = barCompose, content = content)
+}
+
+private fun NavController.nav(state: NavigatorManager.NavigatorState.NavigateAction){
+    val action = state.action
+    val route = "${action.first.navRoute}${action.second ?: ""}"
+    Log.i(TAG, "MainNavigationUi: route: $route")
+    navigate(route)
 }
 @Composable
 fun BottomScaffold(bottomBar: @Composable () -> Unit, content: @Composable (PaddingValues) -> Unit){
@@ -71,7 +82,6 @@ fun BarItemsUi(
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = backStackEntry?.destination?.route
         items.forEach { item ->
-
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = {
@@ -94,6 +104,11 @@ fun BarItemsUi(
                     }
                 })
         }
-
     }
+}
+
+@Preview
+@Composable
+fun PreviewBottomNavigation(){
+
 }

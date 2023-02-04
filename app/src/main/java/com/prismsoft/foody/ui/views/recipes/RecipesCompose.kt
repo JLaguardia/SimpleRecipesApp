@@ -1,31 +1,36 @@
 package com.prismsoft.foody.ui.views.recipes
 
 import android.content.Context
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
-import androidx.compose.foundation.Image
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animate
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.prismsoft.foody.MainViewModel
 import com.prismsoft.foody.R
 import com.prismsoft.foody.data.NetworkResult
@@ -43,40 +48,119 @@ class RecipesView(
     val navigatorManager: NavigatorManager,
     context: Context
 ) {
-//    private val scope = CoroutineScope(Dispatchers.IO) + Job()
-
     init {
-        viewModel.getRecipes(context = context)
+//        viewModel.getRecipes(context = context)
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun RecipesList() {
-        var retry by remember {
-            mutableStateOf(false)
-        }
-//        val result = viewModel.recipesResponse.collectAsState()
-//        val loading = result.value is NetworkResult.Loading
+        val context = LocalContext.current
+        val scope = rememberCoroutineScope()
+        var retry by remember { mutableStateOf(false) }
+        var currentDistance by remember { mutableStateOf(0f) }
+        val threshold = with(LocalDensity.current) { 160.dp.toPx() }
+
+        var refreshing by remember { mutableStateOf(false) }
+
         var result by remember {
             mutableStateOf<NetworkResult<RecipeResponse>>(NetworkResult.Loading())
+        }
+        val progress = currentDistance / threshold
+
+        fun doRefresh() {
+            scope.launch {
+                Log.i("JAMES::", "refreshing... $refreshing")
+                refreshing = true
+                viewModel.getRecipes(context = context)
+            }
+        }
+
+        fun onPull(pullDelta: Float): Float = when {
+            refreshing -> 0f
+            else -> {
+                val newOffset = (currentDistance + pullDelta).coerceAtLeast(0f)
+                val dragConsumed = newOffset - currentDistance
+                currentDistance = newOffset
+                dragConsumed
+            }
+        }
+
+        suspend fun onRelease() {
+            if (refreshing) return // Already refreshing - don't call refresh again.
+            if (currentDistance > threshold) doRefresh()
+
+            animate(initialValue = currentDistance, targetValue = 0f) { value, _ ->
+                currentDistance = value
+            }
         }
 
         LaunchedEffect(key1 = retry) {
             viewModel.recipesResponse.collectLatest {
-                Log.i("JAMES::", "got response: ${it.message}")
+                Log.i("JAMES::", "result: ${it::class.simpleName}")
+                refreshing = false
                 result = it
             }
         }
 
-        LazyColumn {
-            if (result is NetworkResult.Loading) {
-                items(5) {
-                    ShimmerListItem(isLoading = true) { }
-                }
-            } else {
-                items(result.data?.results ?: emptyList()) { item ->
-                    RecipeListItem(item = item.toRecipeItemData())
+        Box(Modifier
+            .pullRefresh(
+                onPull = ::onPull,
+                onRelease = { onRelease() }
+            )
+        ) {
+            LazyColumn(Modifier.fillMaxSize()) {
+                when {
+                    refreshing || result is NetworkResult.Loading -> {
+                        items(7) {
+                            ShimmerListItem(isLoading = true) { }
+                        }
+                    }
+                    result is NetworkResult.Success -> {
+                        items(result.data?.results ?: emptyList()) { item ->
+                            RecipeListItem(item = item.toRecipeItemData())
+                        }
+                    }
+                    else -> {
+                        item {
+                            Column(modifier = Modifier
+                                .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(100.dp),
+                                    imageVector = Icons.Filled.Refresh,
+                                    contentDescription = "Error"
+                                )
+                            }
+                        }
+                    }
                 }
             }
+
+            // Custom progress indicator
+            HorizontalProgressBar(progress = progress, refreshing = refreshing)
+        }
+    }
+}
+
+@Composable
+fun HorizontalProgressBar(progress: Float, refreshing: Boolean){
+    AnimatedVisibility(visible = (refreshing || progress > 0)) {
+        if (refreshing) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .height(8.dp)
+                    .fillMaxWidth()
+            )
+        } else {
+            LinearProgressIndicator(
+                progress = progress,
+                modifier = Modifier
+                    .height(8.dp)
+                    .fillMaxWidth()
+            )
         }
     }
 }
@@ -102,12 +186,13 @@ fun RecipeListItem(
             .heightIn(max = 200.dp)
     ) {
         Row(Modifier.fillMaxWidth()) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth(0.45f),
-                imageVector = Icons.Filled.Face,
-                contentScale = ContentScale.Crop,
-                contentDescription = ""
+                model = item.imageUrl,
+                contentDescription = item.title,
+                placeholder = painterResource(id = R.drawable.ic_restaurant),
+                contentScale = ContentScale.Crop
             )
 
             Column {
@@ -178,7 +263,10 @@ fun RecipeListItem(
     }
 }
 
-@Preview(showSystemUi = false)
+@Preview(
+    showSystemUi = true,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
 fun RecipePreview() {
     var item by remember {

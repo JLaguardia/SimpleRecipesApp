@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    private val _recipesResponse = MutableStateFlow<NetworkResult<RecipeResponse>>(NetworkResult.Loading())
+    private val _recipesResponse = MutableStateFlow<NetworkResult<RecipeResponse>>(NetworkResult.Idle())
     val recipesResponse: StateFlow<NetworkResult<RecipeResponse>> = _recipesResponse
 
     fun getRecipes(queries: Map<String, String> = bootstrapQuery, context: Context) = viewModelScope.launch(Dispatchers.IO) {
@@ -38,7 +38,7 @@ class MainViewModel @Inject constructor(
         "diet" to "vegan",
         "instructionsRequired" to "true",
         "addRecipeInformation" to "true",
-        "number" to "15"
+        "number" to "45"
     )
 
     private suspend fun getRecipesSafeCall(queries: Map<String, String>, context: Context) {

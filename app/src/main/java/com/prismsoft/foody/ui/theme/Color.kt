@@ -7,6 +7,11 @@ val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
+val PrimaryLightWhite = Color(0xFFFFFFFF)
+val VariantLightGrey = Color(0xEEEEEEEE)
+val PrimaryDarkBlack = Color(0xFF000000)
+val VariantDarkGrey = Color(0x66666666)
+
 val Protein = Color(0xFF1545BF)
 val Veggies = Color(0xFF20BF09)
 val Carbs = Color(0xFFEFA500)

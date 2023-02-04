@@ -8,8 +8,10 @@ import androidx.activity.viewModels
 import androidx.compose.material.Text
 import com.prismsoft.foody.MainViewModel
 import com.prismsoft.foody.R
+import com.prismsoft.foody.ui.theme.FoodyTheme
 import com.prismsoft.foody.ui.views.navigation.MainNavigationUi
 import com.prismsoft.foody.ui.views.navigation.NavigatorManager
+import com.prismsoft.foody.util.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,8 +23,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 //        binding = ActivityMainBinding.inflate(layoutInflater)
         setContent {
-            MainNavigationUi(navigator = NavigatorManager(), viewModel = mainViewModel)
+            FoodyTheme {
+                MainNavigationUi(navigator = NavigatorManager(), viewModel = mainViewModel)
+            }
         }
+
+//        hideSystemUI()
 //        setContentView(binding.root)
     }
 
